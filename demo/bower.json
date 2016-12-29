@@ -1,0 +1,31 @@
+{
+  "name": "demo",
+  "main": "index.html",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hashchange/colorful.js",
+  "authors": [
+    "hashchange <heim@zeilenwechsel.de>"
+  ],
+  "description": "Colorful.js demo and playground",
+  "keywords": [
+    "demo"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "bower_demo_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "foundation": "~5.5.3",
+    "jquery": "~3.1.1",
+    "modernizr": "^2 || ~3.3.1",
+    "requirejs": "~2.3.2",
+    "usertiming": "~0.1.8",
+    "vue": "~2.1.8"
+  }
+}

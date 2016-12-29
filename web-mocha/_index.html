@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Mocha Spec Runner</title>
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+    <link rel="stylesheet" href="test-framework.css">
+</head>
+<body>
+    <div id="test-framework-help-link" class="aux"><a href="help.html" target="jsTestHelp">Test Framework Help</a></div>
+    <div id="mocha"></div>
+
+    <!-- Fixing window.console for oldIE -->
+    <script>if ( !window.console ) { window.console = {}; window.console.log = window.console.assert = function () {}; }</script>
+
+    <!-- libraries --><!-- edit and replace with your project libraries as needed -->
+    <script src="../bower_components/underscore/underscore.js"></script>
+
+    <!-- test framework -->
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/mocha-clean/index.js"></script>
+    <script>
+        mocha.setup('bdd');
+        // List files which should be dropped from a stack trace, reducing clutter. (See https://github.com/rstacruz/mocha-clean)
+        // mocha.traceIgnores = ['underscore.js', 'backbone.js'];
+    </script>
+
+    <!-- assertion framework --><!-- remove unnecessary components -->
+    <script src="../node_modules/karma-chai-plugins/node_modules/chai/chai.js"></script>
+
+    <script>
+        var expect = chai.expect,
+            should = chai.should();
+    </script>
+
+    <!-- include source files here... -->
+    <script src="../src/colorful.js"></script>
+
+    <!-- test helpers --><!-- add as needed -->
+    <script src="../spec/helpers/data-provider.js"></script>
+
+    <!-- (include spec files here...) -->
+    <!-- *.spec.js and *.test.js files in the spec dir are added automatically by `grunt interactive` -->
+    <!--SPEC SCRIPTS-->
+    <!--SPEC SCRIPTS END-->
+
+    <script>mocha.run()</script>
+</body>
+</html>
