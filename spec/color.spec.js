@@ -19,7 +19,7 @@
             } );
 
             it( 'is represented by the correct RGBA value', function () {
-                expect( colour.asRGBAArray() ).to.eql( [4, 144, 163, 1] );
+                expect( colour.asArrayRGBA() ).to.eql( [4, 144, 163, 1] );
             } );
 
         } );
@@ -92,7 +92,7 @@
                 } );
 
                 it( 'is represented by the correct RGBA value', function () {
-                    expect( colour.asRGBAArray() ).to.eql( scenario.expectedRGBA );
+                    expect( colour.asArrayRGBA() ).to.eql( scenario.expectedRGBA );
                 } );
 
             } );
@@ -520,51 +520,51 @@
 
         } );
 
-        describe( 'The asRGBArray() method', function () {
+        describe( 'The asArrayRGB() method', function () {
 
             it( 'returns the rgb() value', function () {
-                expect( colour.asRGBArray() ).to.eql( scenarios.opaque.expected.rgbArray );
+                expect( colour.asArrayRGB() ).to.eql( scenarios.opaque.expected.rgbArray );
             } );
 
             it( 'returns the rgb() value rounded to integers', function () {
                 var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 1].join( ", " ) + ")" );
-                expect( colour.asRGBArray() ).to.eql( [254, 255, 255] );
+                expect( colour.asArrayRGB() ).to.eql( [254, 255, 255] );
             } );
 
             it( 'throws an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asRGBArray();
+                    Color( scenarios.transparent.input ).asArrayRGB();
                 } ).to.throw( "Color.ensureOpaque: Color is required to be opaque, but it is not" );
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asRGBArray();
+                    Color( scenarios.transparent.noColour ).asArrayRGB();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
         } );
 
-        describe( 'The asRGBAArray() method', function () {
+        describe( 'The asArrayRGBA() method', function () {
 
             it( 'returns the rgba() value', function () {
-                expect( colour.asRGBAArray() ).to.eql( scenarios.opaque.expected.rgbaArray );
+                expect( colour.asArrayRGBA() ).to.eql( scenarios.opaque.expected.rgbaArray );
             } );
 
             it( 'returns the RGB channels of the rgba() value rounded to integers', function () {
                 var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 0.6789].join( ", " ) + ")" );
-                expect( colour.asRGBAArray() ).to.eql( [254, 255, 255, 0.6789] );
+                expect( colour.asArrayRGBA() ).to.eql( [254, 255, 255, 0.6789] );
             } );
 
             it( 'does not throw an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asRGBAArray();
+                    Color( scenarios.transparent.input ).asArrayRGBA();
                 } ).not.to.throw();
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asRGBAArray();
+                    Color( scenarios.transparent.noColour ).asArrayRGBA();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 

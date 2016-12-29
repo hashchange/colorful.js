@@ -9,7 +9,7 @@ var color = new Color( "rgb(0, 50%, 50%)" );
 
 color.asHexUC()       // => "#008080"
 color.asRGBA()        // => "rgba(0, 128, 128, 1)"
-color.asRGBArray()    // => [0, 128, 128]
+color.asArrayRGB()    // => [0, 128, 128]
 // etc
 
 color.equals( "teal" )                    // => true
@@ -153,6 +153,14 @@ color.asPercentRGB( { precision: 3 } )      // => "rgb(0%, 80.784%, 81.961%)"
 color.asPercentRGB( { precision: "max" } )  // => "rgb(0%, 80.7843137254902%, 81.96078431372548%)"
 ```
 
+### `asArrayRGB()`
+
+Returns the color as an RGB array `[R, G, B]`. Each channel is represented by an integer on a scale of 0 to 255.
+
+```js
+Color( "darkturquoise" ).asArrayRGB()    // => [0, 206, 209]
+```
+
 ### `asRGBA()`
 
 Returns the color as an `rgba()` string. Each RGB channel is represented by an integer on a scale of 0 to 255, and the alpha channel on a scale of 0 to 1.
@@ -174,20 +182,12 @@ color.asPercentRGB()                    // => "rgba(0%, 81%, 82%, 1)"
 color.asPercentRGB( { precision: 3 } )  // => "rgba(0%, 80.784%, 81.961%, 1)"
 ```
 
-### `asRGBArray()`
-
-Returns the color as an RGB array `[R, G, B]`. Each channel is represented by an integer on a scale of 0 to 255.
-
-```js
-Color( "darkturquoise" ).asRGBArray()    // => [0, 206, 209]
-```
-
-### `asRGBAArray()`
+### `asArrayRGBA()`
 
 Returns the color as an RGBA array `[R, G, B, A]`. Each RGB channel is represented by an integer on a scale of 0 to 255, and the alpha channel on a scale of 0 to 1.
 
 ```js
-Color( "darkturquoise" ).asRGBAArray()    // => [0, 206, 209, 1]
+Color( "darkturquoise" ).asArrayRGBA()    // => [0, 206, 209, 1]
 ```
 
 ## Comparisons
@@ -336,7 +336,7 @@ Color( "#AABBCC" ).ensureTransparent()                   // throws an error
 Color( "foo" ).ensureTransparent()                       // throws an error
 ```
 
-## `AgColor` format support
+## `AgColor` support
 
 The obscure `AgColor` format, used internally by Adobe Lightroom, is also recognized. 
 
@@ -424,7 +424,7 @@ Code in the data provider test helper: (c) 2014 Box, Inc., Apache 2.0 license. [
 
 [input formats]: #defining-a-color
 [equals-rounding]: #rounding
-[agcolor-support]: #agcolor-format-support
+[agcolor-support]: #agcolor-support
 [format-percentRGB]: #aspercentrgb-options
 
 [data-provider.js]: https://github.com/hashchange/colorful.js/blob/master/spec/helpers/data-provider.js "Source code of data-provider.js"

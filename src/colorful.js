@@ -545,7 +545,7 @@
 
         asRGB: function () {
             this.ensureOpaque();
-            return "rgb(" + this.asRGBArray().join( ", " ) + ")";
+            return "rgb(" + this.asArrayRGB().join( ", " ) + ")";
         },
 
         /**
@@ -560,7 +560,7 @@
 
         asRGBA: function () {
             this.ensureColor();
-            return "rgba(" + this._asRGBArray().concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
+            return "rgba(" + this._asArrayRgb().concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
         },
 
         /**
@@ -575,17 +575,17 @@
 
         asAgColor: function () {
             this.ensureColor();
-            return "AgColor( " + _.map( this._asAgColorArray(), toDecimalNotation ).join( ", " ) + " )";
+            return "AgColor( " + _.map( this._asArrayAgColor(), toDecimalNotation ).join( ", " ) + " )";
         },
 
-        asRGBArray: function () {
+        asArrayRGB: function () {
             this.ensureOpaque();
-            return this._asRGBArray();
+            return this._asArrayRgb();
         },
 
-        asRGBAArray: function () {
+        asArrayRGBA: function () {
             this.ensureColor();
-            return this._asRGBArray().concat( this._rawColor.a );
+            return this._asArrayRgb().concat( this._rawColor.a );
         },
 
         /**
@@ -605,7 +605,7 @@
 
             if ( isColor && !isEqual && tolerance > 0 ) {
 
-                pairedChannels = _.zip( this.asRGBAArray(), otherColor.asRGBAArray() );
+                pairedChannels = _.zip( this.asArrayRGBA(), otherColor.asArrayRGBA() );
                 pairedAlpha = pairedChannels.pop();
 
                 isEqual = _.every( pairedChannels, function ( pairedChannel ) {
@@ -627,11 +627,11 @@
             return this.isColor() && otherColor.isColor() && this.asPercentRGBA() === otherColor.asPercentRGBA();
         },
 
-        _asAgColorArray: function () {
+        _asArrayAgColor: function () {
             return _.map( this._getRawArrayRgb(), rawToFraction ).concat( this._rawColor.a );
         },
 
-        _asRGBArray: function () {
+        _asArrayRgb: function () {
             return _.map( this._getRawArrayRgb(), rawToBase256 );
         },
 
