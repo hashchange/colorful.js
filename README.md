@@ -1,5 +1,7 @@
 # Colorful.js
 
+<small>[Setup][setup] – [Defining a color][color definition] – [Output][output] – [Comparisons][comparisons] – [Queries][queries] – [Validation][validation] – [Build and test][build]</small>
+
 Colorful.js is a tiny component which creates color objects from a variety of input formats. It outputs color in as many formats, checks if colors are equal, and provides insights into other properties, like transparency.
 
 In a nutshell:
@@ -22,7 +24,7 @@ color.isTransparent() // => false
 
 [Underscore][] is the only dependency. Include colorful.js after Underscore is loaded.
 
-Colorful.js can be loaded in the global context of the browser, or as a module (AMD, CJS/Node). The module contains the [Color][input formats] class:
+Colorful.js can be loaded in the global context of the browser, or as a module (AMD, CJS/Node). The module contains the [Color][color definition] class:
 
 ```js
 var Color = require( "colorful.js" ).Color;
@@ -421,6 +423,14 @@ Code in the data provider test helper: (c) 2014 Box, Inc., Apache 2.0 license. [
 
 [dist-dev]: https://raw.github.com/hashchange/colorful.js/master/dist/colorful.js "colorful.js"
 [dist-prod]: https://raw.github.com/hashchange/colorful.js/master/dist/colorful.min.js "colorful.min.js"
+
+[setup]: #dependencies-and-setup "Setup"
+[color definition]: #defining-a-color
+[output]: #output
+[comparisons]: #comparisons
+[queries]: #queries
+[validation]: #validation
+[build]: #build-process-and-tests "Build process and tests"
 
 [input formats]: #defining-a-color
 [equals-rounding]: #rounding
