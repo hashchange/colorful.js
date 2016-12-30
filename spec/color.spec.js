@@ -19,7 +19,7 @@
             } );
 
             it( 'is represented by the correct RGBA value', function () {
-                expect( colour.asArrayRGBA() ).to.eql( [4, 144, 163, 1] );
+                expect( colour.asRgbaArray() ).to.eql( [4, 144, 163, 1] );
             } );
 
         } );
@@ -92,7 +92,7 @@
                 } );
 
                 it( 'is represented by the correct RGBA value', function () {
-                    expect( colour.asArrayRGBA() ).to.eql( scenario.expectedRGBA );
+                    expect( colour.asRgbaArray() ).to.eql( scenario.expectedRGBA );
                 } );
 
             } );
@@ -305,43 +305,43 @@
 
         } );
 
-        describe( 'The asRGB() method', function () {
+        describe( 'The asRgb() method', function () {
 
             it( 'returns the rgb() value', function () {
-                expect( colour.asRGB() ).to.equal( scenarios.opaque.expected.rgb );
+                expect( colour.asRgb() ).to.equal( scenarios.opaque.expected.rgb );
             } );
 
             it( 'returns the rgb() value rounded to integers', function () {
                 var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 1].join( ", " ) + ")" );
-                expect( colour.asRGB() ).to.equal( "rgb(254, 255, 255)" );
+                expect( colour.asRgb() ).to.equal( "rgb(254, 255, 255)" );
             } );
 
             it( 'throws an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asRGB();
+                    Color( scenarios.transparent.input ).asRgb();
                 } ).to.throw( "Color.ensureOpaque: Color is required to be opaque, but it is not" );
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asRGB();
+                    Color( scenarios.transparent.noColour ).asRgb();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
         } );
 
-        describe( 'The asPercentRGB() method', function () {
+        describe( 'The asRgbPercent() method', function () {
 
             it( 'returns the rgb() value with percentages (integers)', function () {
-                expect( colour.asPercentRGB() ).to.equal( scenarios.opaque.expected.rgbPercent );
+                expect( colour.asRgbPercent() ).to.equal( scenarios.opaque.expected.rgbPercent );
             } );
 
             it( 'returns the rgb() value with percentages in the precision specified by options.precision', function () {
-                expect( colour.asPercentRGB( { precision: 5 } ) ).to.equal( scenarios.opaque.expected.rgbPercent_precision5 );
+                expect( colour.asRgbPercent( { precision: 5 } ) ).to.equal( scenarios.opaque.expected.rgbPercent_precision5 );
             } );
 
             it( 'returns the rgb() value with percentages in full precision when options.precision = "max"', function () {
-                expect( colour.asPercentRGB( { precision: "max" } ) ).to.equal( scenarios.opaque.expected.rgbPercent_precisionMax );
+                expect( colour.asRgbPercent( { precision: "max" } ) ).to.equal( scenarios.opaque.expected.rgbPercent_precisionMax );
             } );
 
             it( 'returns the rgb() value with percentages in full, original precision when options.precision = "max"', function () {
@@ -350,11 +350,11 @@
 
                 // Prior to the actual main test, verifying that the almost identical percentages for G and B map to
                 // different G and B values when rounded to RGB integers.
-                expect( colour.asRGB() ).to.equal( "rgb(0, 168, 169)" );
+                expect( colour.asRgb() ).to.equal( "rgb(0, 168, 169)" );
 
                 // Checking that G and B are returned in their original precision, not altered by a round trip into
                 // another format.
-                expect( colour.asPercentRGB( { precision: "max" } ) ).to.equal( inputStr );
+                expect( colour.asRgbPercent( { precision: "max" } ) ).to.equal( inputStr );
             } );
 
             it( 'returns the rgb() value without converting near-zero values into scientific notation when options.precision = n', function () {
@@ -363,7 +363,7 @@
                 var inputStr = "rgb(0.000000000421%, 50%, 50%)",
                     colour = new Color( inputStr );
 
-                expect( colour.asPercentRGB( { precision: 12 } ) ).to.equal( inputStr );
+                expect( colour.asRgbPercent( { precision: 12 } ) ).to.equal( inputStr );
             } );
 
             it( 'returns the rgb() value without converting near-zero values into scientific notation when options.precision = "max"', function () {
@@ -373,60 +373,60 @@
                 var inputStr = "rgb(0.000000000000000001%, 50%, 50%)",  // 1e-18
                     colour = new Color( inputStr );
 
-                expect( colour.asPercentRGB( { precision: "max" } ) ).to.equal( inputStr );
+                expect( colour.asRgbPercent( { precision: "max" } ) ).to.equal( inputStr );
             } );
 
             it( 'throws an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asPercentRGB();
+                    Color( scenarios.transparent.input ).asRgbPercent();
                 } ).to.throw( "Color.ensureOpaque: Color is required to be opaque, but it is not" );
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asPercentRGB();
+                    Color( scenarios.transparent.noColour ).asRgbPercent();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
         } );
 
-        describe( 'The asRGBA() method', function () {
+        describe( 'The asRgba() method', function () {
 
             it( 'returns the rgba() value', function () {
-                expect( colour.asRGBA() ).to.equal( scenarios.opaque.expected.rgba );
+                expect( colour.asRgba() ).to.equal( scenarios.opaque.expected.rgba );
             } );
 
             it( 'returns the RGB channels of the rgba() value rounded to integers', function () {
                 var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 0.6789].join( ", " ) + ")" );
-                expect( colour.asRGBA() ).to.equal( "rgba(254, 255, 255, 0.6789)" );
+                expect( colour.asRgba() ).to.equal( "rgba(254, 255, 255, 0.6789)" );
             } );
 
             it( 'does not throw an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asRGBA();
+                    Color( scenarios.transparent.input ).asRgba();
                 } ).not.to.throw();
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asRGBA();
+                    Color( scenarios.transparent.noColour ).asRgba();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
         } );
 
-        describe( 'The asPercentRGBA() method', function () {
+        describe( 'The asRgbaPercent() method', function () {
 
             it( 'returns the rgba() value with percentages (integers)', function () {
-                expect( colour.asPercentRGBA() ).to.equal( scenarios.opaque.expected.rgbaPercent );
+                expect( colour.asRgbaPercent() ).to.equal( scenarios.opaque.expected.rgbaPercent );
             } );
 
             it( 'returns the rgba() value with percentages in the precision specified by options.precision', function () {
-                expect( colour.asPercentRGBA( { precision: 5 } ) ).to.equal( scenarios.opaque.expected.rgbaPercent_precision5 );
+                expect( colour.asRgbaPercent( { precision: 5 } ) ).to.equal( scenarios.opaque.expected.rgbaPercent_precision5 );
             } );
 
             it( 'returns the rgba() value with percentages in full precision when options.precision = "max"', function () {
-                expect( colour.asPercentRGBA( { precision: "max" } ) ).to.equal( scenarios.opaque.expected.rgbaPercent_precisionMax );
+                expect( colour.asRgbaPercent( { precision: "max" } ) ).to.equal( scenarios.opaque.expected.rgbaPercent_precisionMax );
             } );
 
             it( 'returns the rgba() value with percentages in full, original precision when options.precision = "max"', function () {
@@ -435,11 +435,11 @@
 
                 // Prior to the actual main test, verifying that the almost identical percentages for G and B map to
                 // different G and B values when rounded to RGB integers.
-                expect( colour.asRGBA() ).to.equal( "rgba(0, 168, 169, 0.4)" );
+                expect( colour.asRgba() ).to.equal( "rgba(0, 168, 169, 0.4)" );
 
                 // Checking that G and B are returned in their original precision, not altered by a round trip into
                 // another format.
-                expect( colour.asPercentRGBA( { precision: "max" } ) ).to.equal( inputStr );
+                expect( colour.asRgbaPercent( { precision: "max" } ) ).to.equal( inputStr );
             } );
 
             it( 'returns the rgba() value without converting near-zero values into scientific notation when options.precision = n', function () {
@@ -448,7 +448,7 @@
                 var inputStr = "rgba(0.000000000421%, 50%, 50%, 0.00000000000421)",
                     colour = new Color( inputStr );
 
-                expect( colour.asPercentRGBA( { precision: 12 } ) ).to.equal( inputStr );
+                expect( colour.asRgbaPercent( { precision: 12 } ) ).to.equal( inputStr );
             } );
 
             it( 'returns the rgba() value without converting near-zero values into scientific notation when options.precision = "max"', function () {
@@ -458,18 +458,18 @@
                 var inputStr = "rgba(0.000000000000000001%, 50%, 50%, 0.000000000000000001)",  // 1e-18
                     colour = new Color( inputStr );
 
-                expect( colour.asPercentRGBA( { precision: "max" } ) ).to.equal( inputStr );
+                expect( colour.asRgbaPercent( { precision: "max" } ) ).to.equal( inputStr );
             } );
 
             it( 'does not throw an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asPercentRGBA();
+                    Color( scenarios.transparent.input ).asRgbaPercent();
                 } ).not.to.throw();
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asPercentRGBA();
+                    Color( scenarios.transparent.noColour ).asRgbaPercent();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
@@ -490,7 +490,7 @@
 
                 // Prior to the actual main test, verifying that the almost identical percentages for G and B map to
                 // different G and B values when rounded to RGB integers.
-                expect( colour.asRGBA() ).to.equal( "rgba(0, 168, 169, 0.4123456789)" );
+                expect( colour.asRgba() ).to.equal( "rgba(0, 168, 169, 0.4123456789)" );
 
                 // Checking that G and B are returned in their original precision, not altered by a round trip into
                 // another format.
@@ -520,51 +520,51 @@
 
         } );
 
-        describe( 'The asArrayRGB() method', function () {
+        describe( 'The asRgbArray() method', function () {
 
             it( 'returns the rgb() value', function () {
-                expect( colour.asArrayRGB() ).to.eql( scenarios.opaque.expected.rgbArray );
+                expect( colour.asRgbArray() ).to.eql( scenarios.opaque.expected.rgbArray );
             } );
 
             it( 'returns the rgb() value rounded to integers', function () {
                 var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 1].join( ", " ) + ")" );
-                expect( colour.asArrayRGB() ).to.eql( [254, 255, 255] );
+                expect( colour.asRgbArray() ).to.eql( [254, 255, 255] );
             } );
 
             it( 'throws an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asArrayRGB();
+                    Color( scenarios.transparent.input ).asRgbArray();
                 } ).to.throw( "Color.ensureOpaque: Color is required to be opaque, but it is not" );
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asArrayRGB();
+                    Color( scenarios.transparent.noColour ).asRgbArray();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
         } );
 
-        describe( 'The asArrayRGBA() method', function () {
+        describe( 'The asRgbaArray() method', function () {
 
             it( 'returns the rgba() value', function () {
-                expect( colour.asArrayRGBA() ).to.eql( scenarios.opaque.expected.rgbaArray );
+                expect( colour.asRgbaArray() ).to.eql( scenarios.opaque.expected.rgbaArray );
             } );
 
             it( 'returns the RGB channels of the rgba() value rounded to integers', function () {
                 var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 0.6789].join( ", " ) + ")" );
-                expect( colour.asArrayRGBA() ).to.eql( [254, 255, 255, 0.6789] );
+                expect( colour.asRgbaArray() ).to.eql( [254, 255, 255, 0.6789] );
             } );
 
             it( 'does not throw an error when the colour is transparent', function () {
                 expect( function () {
-                    Color( scenarios.transparent.input ).asArrayRGBA();
+                    Color( scenarios.transparent.input ).asRgbaArray();
                 } ).not.to.throw();
             } );
 
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
-                    Color( scenarios.transparent.noColour ).asArrayRGBA();
+                    Color( scenarios.transparent.noColour ).asRgbaArray();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
@@ -720,7 +720,7 @@
 
         var inputs = {
             noAlpha: {
-                asRGB: "rgb(0, 128, 254)",
+                asRgb: "rgb(0, 128, 254)",
                 asHex: "#0080FE",
                 asPercentApprox: "rgb(0%, 50%, 99.411765%)", // precise percentages: 0%, 50.1960784314%, 99.6078431373%
                 adjacent: {
@@ -744,30 +744,30 @@
         describe( 'The equals() method', function () {
 
             it( 'accepts string input and detects equality when colours match exactly', function () {
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.asHex ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.asHex ) ).to.be.true;
             } );
 
             it( 'accepts another color object and detects equality when colours match exactly', function () {
                 var otherColour = new Color( inputs.noAlpha.asHex );
-                expect( Color( inputs.noAlpha.asRGB ).equals( otherColour ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).equals( otherColour ) ).to.be.true;
             } );
 
             it( 'returns true if colours values are slightly different but map to the same RGB integers', function () {
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.asPercentApprox ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.asPercentApprox ) ).to.be.true;
             } );
 
             it( 'returns false if colour values are slightly different but map to adjacent RGB values', function () {
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.adjacent.asPercent ) ).to.be.false;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.adjacent.asPercent ) ).to.be.false;
             } );
 
             it( 'returns true if the colour values map to different RGB values but only differ as much as the specified tolerance', function () {
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.offBy2.above, { tolerance: 2 } ) ).to.be.true;
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.offBy2.below, { tolerance: 2 } ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.offBy2.above, { tolerance: 2 } ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.offBy2.below, { tolerance: 2 } ) ).to.be.true;
             } );
 
             it( 'returns false if the colour values map to different RGB values and differ slightly more than the specified tolerance', function () {
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.offByJustMoreThanTwo.above, { tolerance: 2 } ) ).to.be.false;
-                expect( Color( inputs.noAlpha.asRGB ).equals( inputs.noAlpha.offByJustMoreThanTwo.below, { tolerance: 2 } ) ).to.be.false;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.offByJustMoreThanTwo.above, { tolerance: 2 } ) ).to.be.false;
+                expect( Color( inputs.noAlpha.asRgb ).equals( inputs.noAlpha.offByJustMoreThanTwo.below, { tolerance: 2 } ) ).to.be.false;
             } );
 
             it( 'returns false if the RGB colour values are identical but the alpha channel differs slightly, irrespective of the specified tolerance', function () {
@@ -799,20 +799,20 @@
         describe( 'The strictlyEquals() method', function () {
 
             it( 'accepts string input and detects equality when colours match exactly', function () {
-                expect( Color( inputs.noAlpha.asRGB ).strictlyEquals( inputs.noAlpha.asHex ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).strictlyEquals( inputs.noAlpha.asHex ) ).to.be.true;
             } );
 
             it( 'accepts another color object and detects equality when colours match exactly', function () {
                 var otherColour = new Color( inputs.noAlpha.asHex );
-                expect( Color( inputs.noAlpha.asRGB ).strictlyEquals( otherColour ) ).to.be.true;
+                expect( Color( inputs.noAlpha.asRgb ).strictlyEquals( otherColour ) ).to.be.true;
             } );
 
             it( 'returns false if colour values are different', function () {
-                expect( Color( inputs.noAlpha.asRGB ).strictlyEquals( inputs.noAlpha.adjacent.asPercent ) ).to.be.false;
+                expect( Color( inputs.noAlpha.asRgb ).strictlyEquals( inputs.noAlpha.adjacent.asPercent ) ).to.be.false;
             } );
 
             it( 'returns false if colours values are slightly different but map to the same RGB integers', function () {
-                expect( Color( inputs.noAlpha.asRGB ).strictlyEquals( inputs.noAlpha.asPercentApprox ) ).to.be.false;
+                expect( Color( inputs.noAlpha.asRgb ).strictlyEquals( inputs.noAlpha.asPercentApprox ) ).to.be.false;
             } );
 
             it( 'returns false if the RGB colour values are identical but the alpha channel differs slightly', function () {

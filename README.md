@@ -10,8 +10,8 @@ In a nutshell:
 var color = new Color( "rgb(0, 50%, 50%)" );
 
 color.asHexUC()       // => "#008080"
-color.asRGBA()        // => "rgba(0, 128, 128, 1)"
-color.asArrayRGB()    // => [0, 128, 128]
+color.asRgba()        // => "rgba(0, 128, 128, 1)"
+color.asRgbArray()    // => [0, 128, 128]
 // etc
 
 color.equals( "teal" )                    // => true
@@ -87,7 +87,7 @@ Invalid arguments don't cause an error when the color object is created. But the
 
 ```js
 var c = Color( "foo" ),
-    rgbFormat = c.asRGB();   // throws an error
+    rgbFormat = c.asRgb();   // throws an error
 ```
 
 ## Output
@@ -98,8 +98,8 @@ In addition, an error is thrown if the color is transparent but the output forma
 
 ```js
 var color = Color( "rgba(255, 128, 255, 0.5)" ),  // transparent
-    rgba = color.asRGBA(),                        // works
-    rgb = color.asRGB(),                          // throws an error
+    rgba = color.asRgba(),                        // works
+    rgb = color.asRgb(),                          // throws an error
     hex = color.asHex();                          // throws an error
 ```
 
@@ -133,15 +133,15 @@ Returns the color as an upper-case hex string.
 Color( "darkturquoise" ).asHexUC()    // => "#00CED1"
 ```
 
-### `asRGB()`
+### `asRgb()`
 
 Returns the color as an `rgb()` string. Each channel is represented by an integer on a scale of 0 to 255.
 
 ```js
-Color( "darkturquoise" ).asRGB()    // => "rgb(0, 206, 209)"
+Color( "darkturquoise" ).asRgb()    // => "rgb(0, 206, 209)"
 ```
 
-### `asPercentRGB( [options] )`
+### `asRgbPercent( [options] )`
 
 Returns the color as an `rgb()` string. Each channel is represented by a percentage. The number of decimal digits can be specified with `options.precision`. 
 
@@ -150,46 +150,46 @@ The precision can be set to a number in the range of 0 to 20, or to the string `
 ```js
 var color = Color( "darkturquoise" );
 
-color.asPercentRGB()                        // => "rgb(0%, 81%, 82%)"
-color.asPercentRGB( { precision: 3 } )      // => "rgb(0%, 80.784%, 81.961%)"
-color.asPercentRGB( { precision: "max" } )  // => "rgb(0%, 80.7843137254902%, 81.96078431372548%)"
+color.asRgbPercent()                        // => "rgb(0%, 81%, 82%)"
+color.asRgbPercent( { precision: 3 } )      // => "rgb(0%, 80.784%, 81.961%)"
+color.asRgbPercent( { precision: "max" } )  // => "rgb(0%, 80.7843137254902%, 81.96078431372548%)"
 ```
 
-### `asArrayRGB()`
+### `asRgbArray()`
 
 Returns the color as an RGB array `[R, G, B]`. Each channel is represented by an integer on a scale of 0 to 255.
 
 ```js
-Color( "darkturquoise" ).asArrayRGB()    // => [0, 206, 209]
+Color( "darkturquoise" ).asRgbArray()    // => [0, 206, 209]
 ```
 
-### `asRGBA()`
+### `asRgba()`
 
 Returns the color as an `rgba()` string. Each RGB channel is represented by an integer on a scale of 0 to 255, and the alpha channel on a scale of 0 to 1.
 
 ```js
-Color( "darkturquoise" ).asRGBA()    // => "rgba(0, 206, 209, 1)"
+Color( "darkturquoise" ).asRgba()    // => "rgba(0, 206, 209, 1)"
 ```
 
-### `asPercentRGBA( [options] )`
+### `asRgbaPercent( [options] )`
 
 Returns the color as an `rgba()` string. Each RGB channel is represented by a percentage, and the alpha channel on a scale of 0 to 1.
 
-Percentages are returned as integers by default. For greater accuracy, use the `precision` option, [as in `asPercentRGB()`][format-percentRGB].
+Percentages are returned as integers by default. For greater accuracy, use the `precision` option, [as in `asRgbPercent()`][format-percentRGB].
 
 ```js
 var color = Color( "darkturquoise" );
 
-color.asPercentRGB()                    // => "rgba(0%, 81%, 82%, 1)"
-color.asPercentRGB( { precision: 3 } )  // => "rgba(0%, 80.784%, 81.961%, 1)"
+color.asRgbPercent()                    // => "rgba(0%, 81%, 82%, 1)"
+color.asRgbPercent( { precision: 3 } )  // => "rgba(0%, 80.784%, 81.961%, 1)"
 ```
 
-### `asArrayRGBA()`
+### `asRgbaArray()`
 
 Returns the color as an RGBA array `[R, G, B, A]`. Each RGB channel is represented by an integer on a scale of 0 to 255, and the alpha channel on a scale of 0 to 1.
 
 ```js
-Color( "darkturquoise" ).asArrayRGBA()    // => [0, 206, 209, 1]
+Color( "darkturquoise" ).asRgbaArray()    // => [0, 206, 209, 1]
 ```
 
 ## Comparisons

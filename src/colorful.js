@@ -543,9 +543,9 @@
             return this.asHex( { lowerCase: true } );
         },
 
-        asRGB: function () {
+        asRgb: function () {
             this.ensureOpaque();
-            return "rgb(" + this.asArrayRGB().join( ", " ) + ")";
+            return "rgb(" + this.asRgbArray().join( ", " ) + ")";
         },
 
         /**
@@ -553,14 +553,14 @@
          * @param   {number|"max"} [options.precision=0]  number of fractional digits, or "max" for all digits
          * @returns {string}
          */
-        asPercentRGB: function ( options ) {
+        asRgbPercent: function ( options ) {
             this.ensureOpaque();
             return "rgb(" + _.map( this._getRawArrayRgb(), _.partial( rawToPercent, _, options ) ).join( ", " ) + ")";
         },
 
-        asRGBA: function () {
+        asRgba: function () {
             this.ensureColor();
-            return "rgba(" + this._asArrayRgb().concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
+            return "rgba(" + this._asRgbArray().concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
         },
 
         /**
@@ -568,24 +568,24 @@
          * @param   {number|"max"} [options.precision=0]  number of fractional digits, or "max" for all digits
          * @returns {string}
          */
-        asPercentRGBA: function ( options ) {
+        asRgbaPercent: function ( options ) {
             this.ensureColor();
             return "rgba(" + _.map( this._getRawArrayRgb(), _.partial( rawToPercent, _, options ) ).concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
         },
 
         asAgColor: function () {
             this.ensureColor();
-            return "AgColor( " + _.map( this._asArrayAgColor(), toDecimalNotation ).join( ", " ) + " )";
+            return "AgColor( " + _.map( this._asAgColorArray(), toDecimalNotation ).join( ", " ) + " )";
         },
 
-        asArrayRGB: function () {
+        asRgbArray: function () {
             this.ensureOpaque();
-            return this._asArrayRgb();
+            return this._asRgbArray();
         },
 
-        asArrayRGBA: function () {
+        asRgbaArray: function () {
             this.ensureColor();
-            return this._asArrayRgb().concat( this._rawColor.a );
+            return this._asRgbArray().concat( this._rawColor.a );
         },
 
         /**
@@ -601,11 +601,11 @@
             if ( !( otherColor instanceof Color ) ) otherColor = new Color( otherColor );
 
             isColor = this.isColor() && otherColor.isColor();
-            isEqual = isColor && this.asRGBA() === otherColor.asRGBA();
+            isEqual = isColor && this.asRgba() === otherColor.asRgba();
 
             if ( isColor && !isEqual && tolerance > 0 ) {
 
-                pairedChannels = _.zip( this.asArrayRGBA(), otherColor.asArrayRGBA() );
+                pairedChannels = _.zip( this.asRgbaArray(), otherColor.asRgbaArray() );
                 pairedAlpha = pairedChannels.pop();
 
                 isEqual = _.every( pairedChannels, function ( pairedChannel ) {
@@ -624,14 +624,14 @@
          */
         strictlyEquals: function ( otherColor ) {
             if ( !( otherColor instanceof Color ) ) otherColor = new Color( otherColor );
-            return this.isColor() && otherColor.isColor() && this.asPercentRGBA() === otherColor.asPercentRGBA();
+            return this.isColor() && otherColor.isColor() && this.asRgbaPercent() === otherColor.asRgbaPercent();
         },
 
-        _asArrayAgColor: function () {
+        _asAgColorArray: function () {
             return _.map( this._getRawArrayRgb(), rawToFraction ).concat( this._rawColor.a );
         },
 
-        _asArrayRgb: function () {
+        _asRgbArray: function () {
             return _.map( this._getRawArrayRgb(), rawToBase256 );
         },
 
