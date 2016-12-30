@@ -624,7 +624,7 @@
          */
         strictlyEquals: function ( otherColor ) {
             if ( !( otherColor instanceof Color ) ) otherColor = new Color( otherColor );
-            return this.isColor() && otherColor.isColor() && this.asRgbaPercent() === otherColor.asRgbaPercent();
+            return this.isColor() && otherColor.isColor() && this.asRgbaPercent( { precision: "max" } ) === otherColor.asRgbaPercent( { precision: "max" } );
         },
 
         _asAgColorArray: function () {

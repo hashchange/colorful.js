@@ -815,6 +815,10 @@
                 expect( Color( inputs.noAlpha.asRgb ).strictlyEquals( inputs.noAlpha.asPercentApprox ) ).to.be.false;
             } );
 
+            it( 'returns false if colours values are slightly different but would be rounded to the same RGB percentages', function () {
+                expect( Color( "rgb(0%, 50%, 100%)" ).strictlyEquals( "rgb(0.00000000000000000001%, 50.00000000000000000001%, 99.99999999999999999999%)" ) ).to.be.false;
+            } );
+
             it( 'returns false if the RGB colour values are identical but the alpha channel differs slightly', function () {
                 expect( Color( inputs.alpha.value ).strictlyEquals( inputs.alpha.alphaDiff ) ).to.be.false;
             } );
