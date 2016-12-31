@@ -68,15 +68,23 @@
                 "in AgColor format without spaces": { input: "AgColor(.00623,1,.672587491,.5)", expectedRGBA: [2, 255, 172, 0.5] },
                 "in AgColor format with excess spaces": { input: "   AgColor   (   .00623   ,   1   ,   .672587491   ,   .5   )", expectedRGBA: [2, 255, 172, 0.5] },
 
-                "as an array of RGB values": { input: [4, 144, 163], expectedRGBA: [4, 144, 163, 1] },
-                "as an array of RGBA values": { input: [4, 144, 163, 0.5], expectedRGBA: [4, 144, 163, 0.5] },
+                "as an array of integer RGB values": { input: [4, 144, 163], expectedRGBA: [4, 144, 163, 1] },
+                "as an array of integer RGBA values": { input: [4, 144, 163, 0.5], expectedRGBA: [4, 144, 163, 0.5] },
+                "as an array of RGB values with decimals": { input: [4.499999999999999, 143.5, 163.00000010101010101], expectedRGBA: [4, 144, 163, 1], expectedPreciseRGBA: [4.499999999999999, 143.5, 163.00000010101010101, 1] },
+                "as an array of RGBA values with decimals": { input: [4.499999999999999, 143.5, 163.00000010101010101, 0.5], expectedRGBA: [4, 144, 163, 0.5], expectedPreciseRGBA: [4.499999999999999, 143.5, 163.00000010101010101, 0.5] },
                 "as an array of RGB percentage values": { input: [".623%", "100.0%", "67.2587491%"], expectedRGBA: [2, 255, 172, 1] },
                 "as an array of RGBA percentage values": { input: [".623%", "100.0%", "67.2587491%", 0.5], expectedRGBA: [2, 255, 172, 0.5] },
+                "as a mixed array of integer RGB values, RGB values with decimals, and percentages": { input: [4.499999999999999, 143.5, "67.2587491%"], expectedRGBA: [4, 144, 172, 1], expectedPreciseRGBA: [4.499999999999999, 143.5, ( 67.2587491 * 2.55 ), 1] },
+                "as a mixed array of integer RGBA values, RGBA values with decimals, and percentages": { input: [4.499999999999999, 143.5, "67%", 0.5], expectedRGBA: [4, 144, 171, 0.5], expectedPreciseRGBA: [4.499999999999999, 143.5, ( 67 * 2.55 ), 0.5] },
 
-                "as a hash of RGB values": { input: { r: 4, g: 144, b: 163 }, expectedRGBA: [4, 144, 163, 1] },
-                "as a hash of RGBA values": { input: { r: 4, g: 144, b: 163, a: 0.5 }, expectedRGBA: [4, 144, 163, 0.5] },
+                "as a hash of integer RGB values": { input: { r: 4, g: 144, b: 163 }, expectedRGBA: [4, 144, 163, 1] },
+                "as a hash of integer RGBA values": { input: { r: 4, g: 144, b: 163, a: 0.5 }, expectedRGBA: [4, 144, 163, 0.5] },
+                "as a hash of RGB values with decimals": { input: { r: 4.499999999999999, g: 143.5, b: 163.00000010101010101 }, expectedRGBA: [4, 144, 163, 1], expectedPreciseRGBA: [4.499999999999999, 143.5, 163.00000010101010101, 1] },
+                "as a hash of RGBA values with decimals": { input: { r: 4.499999999999999, g: 143.5, b: 163.00000010101010101, a: 0.5}, expectedRGBA: [4, 144, 163, 0.5], expectedPreciseRGBA: [4.499999999999999, 143.5, 163.00000010101010101, 0.5] },
                 "as a hash of RGB percentage values": { input: { r: ".623%", g: "100.0%", b: "67.2587491%" }, expectedRGBA: [2, 255, 172, 1] },
-                "as a hash of RGBA percentage values": { input: { r: ".623%", g: "100.0%", b: "67.2587491%", a: 0.5 }, expectedRGBA: [2, 255, 172, 0.5] }
+                "as a hash of RGBA percentage values": { input: { r: ".623%", g: "100.0%", b: "67.2587491%", a: 0.5 }, expectedRGBA: [2, 255, 172, 0.5] },
+                "as a mixed hash of integer RGB values, RGB values with decimals, and percentages": { input: { r: 4.499999999999999, g: 143.5, b: "67.2587491%"}, expectedRGBA: [4, 144, 172, 1], expectedPreciseRGBA: [4.499999999999999, 143.5, ( 67.2587491 * 2.55 ), 1] },
+                "as a mixed hash of integer RGBA values, RGBA values with decimals, and percentages": { input: { r: 4.499999999999999, g: 143.5, b: "67%", a: 0.5}, expectedRGBA: [4, 144, 171, 0.5], expectedPreciseRGBA: [4.499999999999999, 143.5, ( 67 * 2.55 ), 0.5] }
             };
 
             describeWithData( inputColourScenario, function ( scenario ) {
@@ -94,6 +102,14 @@
                 it( 'is represented by the correct RGBA value', function () {
                     expect( colour.asRgbaArray() ).to.eql( scenario.expectedRGBA );
                 } );
+
+                if ( scenario.expectedPreciseRGBA ) {
+
+                    it( 'is represented by the correct RGBA value when enabling full precision', function () {
+                        expect( colour.asRgbaArray( { precision: "max"} ) ).to.eql( scenario.expectedPreciseRGBA );
+                    } );
+
+                }
 
             } );
 
@@ -522,13 +538,36 @@
 
         describe( 'The asRgbArray() method', function () {
 
-            it( 'returns the rgb() value', function () {
+            var preciseScenario,
+                preciseColour;
+
+            beforeEach( function () {
+                preciseScenario = {
+                    input: [254.499999999460001, 254.5, 254.500000000150001],
+                    expected: {
+                        rounded: [254, 255, 255],
+                        precision10: [254.4999999995, 254.5, 254.5000000002],
+                        precisionMax: [254.499999999460001, 254.5, 254.500000000150001]   // same as input
+                    }
+                };
+
+                preciseColour = new Color( preciseScenario.input );
+            } );
+
+            it( 'returns the rgb() values', function () {
                 expect( colour.asRgbArray() ).to.eql( scenarios.opaque.expected.rgbArray );
             } );
 
-            it( 'returns the rgb() value rounded to integers', function () {
-                var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 1].join( ", " ) + ")" );
-                expect( colour.asRgbArray() ).to.eql( [254, 255, 255] );
+            it( 'returns the rgb() values rounded to integers', function () {
+                expect( preciseColour.asRgbArray() ).to.eql( preciseScenario.expected.rounded );
+            } );
+
+            it( 'returns the rgb() values in the precision specified by options.precision', function () {
+                expect( preciseColour.asRgbArray( { precision: 10 } ) ).to.eql( preciseScenario.expected.precision10 );
+            } );
+
+            it( 'returns the rgb() values in full precision when options.precision = "max"', function () {
+                expect( preciseColour.asRgbArray( { precision: "max" } ) ).to.eql( preciseScenario.expected.precisionMax );
             } );
 
             it( 'throws an error when the colour is transparent', function () {
@@ -547,13 +586,36 @@
 
         describe( 'The asRgbaArray() method', function () {
 
-            it( 'returns the rgba() value', function () {
+            var preciseScenario,
+                preciseColour;
+
+            beforeEach( function () {
+                preciseScenario = {
+                    input: [254.499999999460001, 254.5, 254.500000000150001, 0.5],
+                    expected: {
+                        rounded: [254, 255, 255, 0.5],
+                        precision10: [254.4999999995, 254.5, 254.5000000002, 0.5],
+                        precisionMax: [254.499999999460001, 254.5, 254.500000000150001, 0.5]   // same as input
+                    }
+                };
+
+                preciseColour = new Color( preciseScenario.input );
+            } );
+
+            it( 'returns the rgba() values', function () {
                 expect( colour.asRgbaArray() ).to.eql( scenarios.opaque.expected.rgbaArray );
             } );
 
-            it( 'returns the RGB channels of the rgba() value rounded to integers', function () {
-                var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 0.6789].join( ", " ) + ")" );
-                expect( colour.asRgbaArray() ).to.eql( [254, 255, 255, 0.6789] );
+            it( 'returns the RGB channels of the array rounded to integers', function () {
+                expect( preciseColour.asRgbaArray() ).to.eql( preciseScenario.expected.rounded );
+            } );
+
+            it( 'returns the RGB channels of the array in the precision specified by options.precision', function () {
+                expect( preciseColour.asRgbaArray( { precision: 10 } ) ).to.eql( preciseScenario.expected.precision10 );
+            } );
+
+            it( 'returns the RGB channels of the array in full precision when options.precision = "max"', function () {
+                expect( preciseColour.asRgbaArray( { precision: "max" } ) ).to.eql( preciseScenario.expected.precisionMax );
             } );
 
             it( 'does not throw an error when the colour is transparent', function () {
@@ -724,7 +786,7 @@
                 asHex: "#0080FE",
                 asPercentApprox: "rgb(0%, 50%, 99.411765%)", // precise percentages: 0%, 50.1960784314%, 99.6078431373%
                 adjacent: {
-                    asPercent: "rgb(0%, 50%, 99.411764%)"    // border between 253 and 254 is at 99,4117647...%
+                    asPercent: "rgb(0%, 50%, 99.411764%)"    // boundary between 253 and 254 is at 99,4117647...%
                 },
                 offBy2: {
                     above: [2, 130, 255],

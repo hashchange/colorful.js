@@ -188,30 +188,34 @@
             "yellowgreen": [154, 205, 50]
         },
 
-        _rxFraction = "(?:1(?:\\.0+)?|0?\\.\\d+|0)",
-        rxAlpha = "(" + _rxFraction + ")",
-        rxOptionalAlpha = "(" + _rxFraction + "?)",
+        _rxstrFraction = "(?:1(?:\\.0+)?|0?\\.\\d+|0)",
+        rxstrAlpha = "(" + _rxstrFraction + ")",
+        rxstrOptionalAlpha = "(" + _rxstrFraction + "?)",
 
-        rxRgbChannelBase256 = "(255|25[0-4]|2[0-4]\\d|(?:[0-1]?\\d)?\\d)",
-        rxRgbChannelPercent = "(100(?:\\.0+)?|\\d{0,2}(?:\\.\\d+)|\\d{1,2})\\s*%",
-        rxRgbChannelHexLC = "([a-f\\d]{2})",
-        rxRgbChannelHexUC = "([A-F\\d]{2})",
-        rxRgbChannelShortHexLC = "([a-f\\d])",
-        rxRgbChannelShortHexUC = "([A-F\\d])",
-        rxRgbChannelFraction = rxAlpha,
+        rxstrRgbChannelBase256 = "(255(?:\\.0+)?|25[0-4](?:\\.\\d+)?|2[0-4]\\d(?:\\.\\d+)?|(?:[0-1]?\\d)?\\d(?:\\.\\d+)?)",
+        rxstrRgbChannelPercent = "(100(?:\\.0+)?|\\d{0,2}(?:\\.\\d+)|\\d{1,2})\\s*%",
+        rxstrRgbChannelHexLC = "([a-f\\d]{2})",
+        rxstrRgbChannelHexUC = "([A-F\\d]{2})",
+        rxstrRgbChannelShortHexLC = "([a-f\\d])",
+        rxstrRgbChannelShortHexUC = "([A-F\\d])",
+        rxstrRgbChannelFraction = rxstrAlpha,
 
-        rxHexLC = buildColorRx( "#", rxRgbChannelHexLC ),
-        rxHexUC = buildColorRx( "#", rxRgbChannelHexUC ),
-        rxHexShortLC = buildColorRx( "#", rxRgbChannelShortHexLC ),
-        rxHexShortUC = buildColorRx( "#", rxRgbChannelShortHexUC ),
+        rxRgbChannelBase256 = new RegExp( "^\\s*" + rxstrRgbChannelBase256 + "\\s*$" ),
+        rxRgbChannelPercent = new RegExp( "^\\s*" + rxstrRgbChannelPercent + "\\s*$" ),
+        rxAlphaChannel = new RegExp( "^\\s*" + rxstrAlpha + "\\s*$" ),
 
-        rxRgbBase256 = buildColorRx( "rgb", rxRgbChannelBase256 ),
-        rxRgbaBase256 = buildColorRx( "rgba", rxRgbChannelBase256, true ),
+        rxHexLC = buildColorRx( "#", rxstrRgbChannelHexLC ),
+        rxHexUC = buildColorRx( "#", rxstrRgbChannelHexUC ),
+        rxHexShortLC = buildColorRx( "#", rxstrRgbChannelShortHexLC ),
+        rxHexShortUC = buildColorRx( "#", rxstrRgbChannelShortHexUC ),
 
-        rxRgbPercent = buildColorRx( "rgb", rxRgbChannelPercent ),
-        rxRgbaPercent = buildColorRx( "rgba", rxRgbChannelPercent, true ),
+        rxRgbBase256 = buildColorRx( "rgb", rxstrRgbChannelBase256 ),
+        rxRgbaBase256 = buildColorRx( "rgba", rxstrRgbChannelBase256, true ),
 
-        rxAgColor = buildColorRx( "AgColor", rxRgbChannelFraction, true );
+        rxRgbPercent = buildColorRx( "rgb", rxstrRgbChannelPercent ),
+        rxRgbaPercent = buildColorRx( "rgba", rxstrRgbChannelPercent, true ),
+
+        rxAgColor = buildColorRx( "AgColor", rxstrRgbChannelFraction, true );
 
 
     /*
@@ -265,6 +269,41 @@
         return _decimalAdjust( 'ceil', value, precision );
     };
 
+    /**
+     * Converts a number to a decimal string. Ensures that even very small numbers are returned in decimal notation,
+     * rather than scientific notation.
+     *
+     * Numbers are allowed a maximum of 20 decimal digits when expressed in decimal notation (a limitation caused by the
+     * Javascript function .toFixed()). Any digits beyond that limit are rounded.
+     *
+     * NB The function doesn't handle scientific notation for very large numbers because they don't occur in the context
+     * of colour.
+     *
+     * @param   {number} number
+     * @returns {string}
+     */
+    function toDecimalNotation ( number ) {
+        var numStr = number + "";
+
+        // If we encounter scientific notation in the stringified number, we don't just modify parts of it. Instead, we
+        // reconstruct the entire stringified number from scratch. (That's possible because we use a regex matching the
+        // stringified number in full.)
+        numStr = numStr.replace( /^(\d+)(?:\.(\d+))?e-(\d+)$/i, function ( match, intDigits, fractionalDigits, absExponent ) {
+            var digits = +absExponent + ( fractionalDigits ? fractionalDigits.length : 0 );
+
+            // The argument for String.toFixed( digits ) is allowed to be between 0 and 20, so we have to limit the
+            // range accordingly.
+            if ( digits > 20 ) {
+                Nums.round( number, 20 );
+                digits = 20;
+            }
+
+            return number.toFixed( digits );
+        } );
+
+        return numStr;
+    }
+
 
     /*
      * Color parsing
@@ -276,7 +315,7 @@
             suffix = isHex ? "" : "\\s*\\)",
             rxChannels = [ rxRgbChannel, rxRgbChannel, rxRgbChannel ];
 
-        if ( withAlpha ) rxChannels.push( rxAlpha );
+        if ( withAlpha ) rxChannels.push( rxstrAlpha );
         if ( !isHex ) prefix += "\\s*\\(\\s*";
 
         return new RegExp( "^\\s*" + prefix + rxChannels.join( channelSeparator ) + suffix + "\\s*$" );
@@ -358,9 +397,73 @@
         return data;
     }
 
+    function parseRgbChannel ( channel ) {
+        var matches,
+            parsedNum = -1;
+
+        if ( _.isNumber( channel ) ) {
+
+            parsedNum = channel;
+
+        } else if ( _.isString( channel ) ) {
+
+            matches = channel.match( rxRgbChannelBase256 );
+
+            if ( matches ) {
+                // Converting to number
+                parsedNum = +matches[1]
+            } else {
+                matches = channel.match( rxRgbChannelPercent );
+
+                // Converting percentages to base 256 (but without removing fractional parts)
+                if ( matches ) parsedNum = matches[1] * 255 / 100;
+            }
+
+        }
+
+        return ( parsedNum >= 0 && parsedNum <= 255 ) ? parsedNum : undefined;
+    }
+
+    function parseAlphaChannel ( channel ) {
+        var matches,
+            parsedNum = -1;
+
+        if ( _.isNumber( channel ) ) {
+
+            parsedNum = channel;
+
+        } else if ( _.isString( channel ) ) {
+
+            matches = channel.match( rxAlphaChannel );
+            if ( matches ) parsedNum = +matches[1]
+        }
+
+        return ( parsedNum >= 0 && parsedNum <= 1 ) ? parsedNum : undefined;
+    }
+
+    function parseColorArray ( colorArray ) {
+        var parsed,
+
+            rawRgb = [colorArray[0], colorArray[1], colorArray[2]],
+            rawAlpha = colorArray[3],
+
+            parsedRgb = _.map( rawRgb, parseRgbChannel ),
+            parsedAlpha = parseAlphaChannel( rawAlpha ),
+
+            success = !_.some( parsedRgb, _.isUndefined ) && ( rawAlpha === undefined || parsedAlpha !== undefined );
+
+        // Conversion of data object to parsed data
+        if ( success ) {
+            parsed = _.object( [ "r", "g", "b" ], parsedRgb );
+            parsed.a = parsedAlpha;
+        }
+
+        return parsed;
+    }
+
     // NB We can't handle the CSS keyword "currentcolor" here because we lack the context for it.
     function parseColor ( color ) {
-        var parsed, colorStr, keys, colorArr, data;
+        var parsed, keys, colorArr, data;
 
         if ( color instanceof Color ) {
 
@@ -368,8 +471,7 @@
 
         } else if ( _.isArray( color ) && ( color.length === 3 || color.length === 4 ) ) {
 
-            colorStr = ( color.length === 4 ? "rgba" : "rgb" ) + "(" + color.join( ", " ) + ")";
-            parsed = new Color( colorStr )._rawColor;
+            parsed = parseColorArray( color );
 
         } else if ( _.isObject( color ) ) {
             keys = _.keys( color );
@@ -379,8 +481,7 @@
                 colorArr = [ color.r, color.g, color.b ];
                 if ( keys.length === 4 ) colorArr.push( color.a );
 
-                colorStr = ( colorArr.length === 4 ? "rgba" : "rgb" ) + "(" + colorArr.join( ", " ) + ")";
-                parsed = new Color( colorStr )._rawColor;
+                parsed = parseColorArray( colorArr );
 
             }
 
@@ -428,43 +529,10 @@
         return upperCase ? hex.toUpperCase() : hex.toLowerCase();
     }
 
-    function rawToBase256 ( rawChannel ) {
-        return Nums.round( rawChannel );
-    }
+    function rawToBase256 ( rawChannel, options ) {
+        var precision = options && options.precision || 0;
 
-    /**
-     * Converts a number to a decimal string. Ensures that even very small numbers are returned in decimal notation,
-     * rather than scientific notation.
-     *
-     * Numbers are allowed a maximum of 20 decimal digits when expressed in decimal notation (a limitation caused by the
-     * Javascript function .toFixed()). Any digits beyond that limit are rounded.
-     *
-     * NB The function doesn't handle scientific notation for very large numbers because they don't occur in the context
-     * of colour.
-     *
-     * @param   {number} number
-     * @returns {string}
-     */
-    function toDecimalNotation ( number ) {
-        var numStr = number + "";
-
-        // If we encounter scientific notation in the stringified number, we don't just modify parts of it. Instead, we
-        // reconstruct the entire stringified number from scratch. (That's possible because we use a regex matching the
-        // stringified number in full.)
-        numStr = numStr.replace( /^(\d+)(?:\.(\d+))?e-(\d+)$/i, function ( match, intDigits, fractionalDigits, absExponent ) {
-            var digits = +absExponent + ( fractionalDigits ? fractionalDigits.length : 0 );
-
-            // The argument for String.toFixed( digits ) is allowed to be between 0 and 20, so we have to limit the
-            // range accordingly.
-            if ( digits > 20 ) {
-                Nums.round( number, 20 );
-                digits = 20;
-            }
-
-            return number.toFixed( digits );
-        } );
-
-        return numStr;
+        return precision === "max" ? rawChannel : Nums.round( rawChannel, precision );
     }
 
     function rawToPercent ( rawChannel, options ) {
@@ -554,8 +622,10 @@
          * @returns {string}
          */
         asRgbPercent: function ( options ) {
+            var mapCb = options && options.precision ? _.partial( rawToPercent, _, options ) : rawToPercent;
+
             this.ensureOpaque();
-            return "rgb(" + _.map( this._getRawArrayRgb(), _.partial( rawToPercent, _, options ) ).join( ", " ) + ")";
+            return "rgb(" + _.map( this._getRawArrayRgb(), mapCb ).join( ", " ) + ")";
         },
 
         asRgba: function () {
@@ -569,8 +639,10 @@
          * @returns {string}
          */
         asRgbaPercent: function ( options ) {
+            var mapCb = options && options.precision ? _.partial( rawToPercent, _, options ) : rawToPercent;
+
             this.ensureColor();
-            return "rgba(" + _.map( this._getRawArrayRgb(), _.partial( rawToPercent, _, options ) ).concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
+            return "rgba(" + _.map( this._getRawArrayRgb(), mapCb ).concat( toDecimalNotation( this._rawColor.a ) ).join( ", " ) + ")";
         },
 
         asAgColor: function () {
@@ -578,14 +650,24 @@
             return "AgColor( " + _.map( this._asAgColorArray(), toDecimalNotation ).join( ", " ) + " )";
         },
 
-        asRgbArray: function () {
+        /**
+         * @param   {Object}       [options]
+         * @param   {number|"max"} [options.precision=0]  number of fractional digits, or "max" for all digits
+         * @returns {number[]}
+         */
+        asRgbArray: function ( options ) {
             this.ensureOpaque();
-            return this._asRgbArray();
+            return this._asRgbArray( options );
         },
 
-        asRgbaArray: function () {
+        /**
+         * @param   {Object}       [options]
+         * @param   {number|"max"} [options.precision=0]  number of fractional digits, or "max" for all digits
+         * @returns {number[]}
+         */
+        asRgbaArray: function ( options ) {
             this.ensureColor();
-            return this._asRgbArray().concat( this._rawColor.a );
+            return this._asRgbArray( options ).concat( this._rawColor.a );
         },
 
         /**
@@ -631,8 +713,10 @@
             return _.map( this._getRawArrayRgb(), rawToFraction ).concat( this._rawColor.a );
         },
 
-        _asRgbArray: function () {
-            return _.map( this._getRawArrayRgb(), rawToBase256 );
+        _asRgbArray: function ( options ) {
+            var mapCb = options && options.precision ? _.partial( rawToBase256, _, options ) : rawToBase256;
+
+            return _.map( this._getRawArrayRgb(), mapCb );
         },
 
         _getRawArrayRgb: function () {
