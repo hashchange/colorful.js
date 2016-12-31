@@ -411,7 +411,7 @@
 
             if ( matches ) {
                 // Converting to number
-                parsedNum = +matches[1]
+                parsedNum = +matches[1];
             } else {
                 matches = channel.match( rxRgbChannelPercent );
 
@@ -435,7 +435,7 @@
         } else if ( _.isString( channel ) ) {
 
             matches = channel.match( rxAlphaChannel );
-            if ( matches ) parsedNum = +matches[1]
+            if ( matches ) parsedNum = +matches[1];
         }
 
         return ( parsedNum >= 0 && parsedNum <= 1 ) ? parsedNum : undefined;
