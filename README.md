@@ -61,15 +61,19 @@ Color( "rgba(0, 153, 170, 1)" )           // rgba() string
 Color( "rgb(0%, 6.152%, 67%)" )           // rgb() string, percentages
 Color( "rgba(0%, 6.152%, 67%, 0.3)" )     // rgba() string, RGB percentages
 
-Color( [4, 144, 163] )                    // RGB array
-Color( [4, 144, 163, 0.5] )               // RGBA array
+Color( [4, 144.23, 163] )                 // RGB array
+Color( [4, 144.23, 163, 0.5] )            // RGBA array
 Color( [".623%", "100.0%", "67.258%"] )   // RGB array, percentages
 Color( [".623%", "100%", "67.2%", 0.5] )  // RGBA array, RGB percentages
 
-Color( { r: 4, g: 144, b: 163 } )                  // RGB hash
-Color( { r: 4, g: 144, b: 163, a: 0.5 } )          // RGBA hash
+Color( { r: 4, g: 144.23, b: 163 } )               // RGB hash
+Color( { r: 4, g: 144.23, b: 163, a: 0.5 } )       // RGBA hash
 Color( { r: ".623%", g: "100.0%", b: "67.2%" } )   // RGB hash, percentages
 Color( { r: "0.6%", g: "10%", b: "7%", a: 0.5 } )  // RGBA hash, RGB percentages
+
+// In an array or a hash, numeric and percentage values can be mixed:
+Color( ["0.6%", 144.23, "7%"] )
+Color( { r: "0.6%", g: 144.23, b: "7%", a: 0.5 } )
 ```
 
 The obscure `AgColor` format used by Adobe Lightroom is [also supported][agcolor-support].
@@ -155,9 +159,11 @@ color.asRgbPercent( { precision: 3 } )      // => "rgb(0%, 80.784%, 81.961%)"
 color.asRgbPercent( { precision: "max" } )  // => "rgb(0%, 80.7843137254902%, 81.96078431372548%)"
 ```
 
-### `asRgbArray()`
+### `asRgbArray( [options] )`
 
 Returns the color as an RGB array `[R, G, B]`. Each channel is represented by an integer on a scale of 0 to 255.
+
+For greater accuracy, use the `precision` option, [as in `asRgbPercent()`][format-rgb-percent].
 
 ```js
 Color( "darkturquoise" ).asRgbArray()    // => [0, 206, 209]
@@ -175,7 +181,7 @@ Color( "darkturquoise" ).asRgba()    // => "rgba(0, 206, 209, 1)"
 
 Returns the color as an `rgba()` string. Each RGB channel is represented by a percentage, and the alpha channel on a scale of 0 to 1.
 
-Percentages are returned as integers by default. For greater accuracy, use the `precision` option, [as in `asRgbPercent()`][format-percentRGB].
+Percentages are returned as integers by default. For greater accuracy, use the `precision` option, [as in `asRgbPercent()`][format-rgb-percent].
 
 ```js
 var color = Color( "darkturquoise" );
@@ -184,9 +190,11 @@ color.asRgbPercent()                    // => "rgba(0%, 81%, 82%, 1)"
 color.asRgbPercent( { precision: 3 } )  // => "rgba(0%, 80.784%, 81.961%, 1)"
 ```
 
-### `asRgbaArray()`
+### `asRgbaArray( [options] )`
 
-Returns the color as an RGBA array `[R, G, B, A]`. Each RGB channel is represented by an integer on a scale of 0 to 255, and the alpha channel on a scale of 0 to 1.
+Returns the color as an RGBA array `[R, G, B, A]`. Each RGB channel is represented on a scale of 0 to 255, and the alpha channel on a scale of 0 to 1.
+
+RGB channels are returned as integers by default. For greater accuracy, use the `precision` option, [as in `asRgbPercent()`][format-rgb-percent].
 
 ```js
 Color( "darkturquoise" ).asRgbaArray()    // => [0, 206, 209, 1]
@@ -409,6 +417,13 @@ New test files in the `spec` directory are picked up automatically, no need to e
 
 ## Release notes
 
+### v0.2.0
+
+- Renamed array output methods
+- Allowed decimals for numeric RGB input (in `rgb()`, `rgba()` strings, arrays, hashes)
+- Added a `precision` option to `asRgbArray()`, `asRgbaArray()`
+- Fixed accidental rounding of percentages in `strictlyEquals()`
+
 ### v0.1.0
 
 - Initial public release
@@ -432,10 +447,10 @@ Code in the data provider test helper: (c) 2014 Box, Inc., Apache 2.0 license. [
 [validation]: #validation
 [build]: #build-process-and-tests "Build process and tests"
 
-[input formats]: #defining-a-color
+[input formats]: #input-formats
 [equals-rounding]: #rounding
 [agcolor-support]: #agcolor-support
-[format-percentRGB]: #aspercentrgb-options
+[format-rgb-percent]: #asrgbpercent-options-
 
 [data-provider.js]: https://github.com/hashchange/colorful.js/blob/master/spec/helpers/data-provider.js "Source code of data-provider.js"
 
