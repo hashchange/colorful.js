@@ -200,6 +200,15 @@ RGB channels are returned as integers by default. For greater accuracy, use the 
 Color( "darkturquoise" ).asRgbaArray()    // => [0, 206, 209, 1]
 ```
 
+### `asComputed()`
+
+Returns the color as a browser would. When querying the [computed value of a color][mdn-color-property], a browser returns it as an `rgb()` string if the color is opaque, and as an `rgba()` string if the color is transparent.
+
+```js
+Color( [0, 206, 209, 1.0] ).asComputed()    // => "rgb(0, 206, 209)"
+Color( [0, 206, 209, 0.5] ).asComputed()    // => "rgba(0, 206, 209, 0.5)"
+```
+
 ## Comparisons
 
 ### `equals( otherColor, [options] )`
@@ -417,6 +426,10 @@ New test files in the `spec` directory are picked up automatically, no need to e
 
 ## Release notes
 
+### v0.3.0
+
+- Added `asComputed()`
+
 ### v0.2.0
 
 - Renamed array output methods
@@ -451,6 +464,8 @@ Code in the data provider test helper: (c) 2014 Box, Inc., Apache 2.0 license. [
 [equals-rounding]: #rounding
 [agcolor-support]: #agcolor-support
 [format-rgb-percent]: #asrgbpercent-options-
+
+[mdn-color-property]: https://developer.mozilla.org/en-US/docs/Web/CSS/color "MDN: color property"
 
 [data-provider.js]: https://github.com/hashchange/colorful.js/blob/master/spec/helpers/data-provider.js "Source code of data-provider.js"
 

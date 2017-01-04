@@ -670,6 +670,10 @@
             return this._asRgbArray( options ).concat( this._rawColor.a );
         },
 
+        asComputed: function () {
+            return this.isOpaque() ? this.asRgb() : this.asRgba();
+        },
+
         /**
          * @param   {*}       otherColor
          * @param   {Object}  [options]

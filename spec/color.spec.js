@@ -230,7 +230,7 @@
                 transparent: {
                     input: [0, 153, 169, 0.5],
                     expected: {
-                        rgba: "0, 153, 169, 0.5",
+                        rgba: "rgba(0, 153, 169, 0.5)",
                         rgbaArray: [0, 153, 169, 0.5],
                         rgbaPercent: "0%, 60%, 66%, 0.5",
                         agColor: "AgColor(0, 0.6, 0.66, 0.5)"
@@ -627,6 +627,34 @@
             it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
                 expect( function () {
                     Color( scenarios.transparent.noColour ).asRgbaArray();
+                } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
+            } );
+
+        } );
+
+        describe( 'The asComputed() method', function () {
+
+            it( 'returns the rgb() value when the colour is opaque', function () {
+                expect( Color( scenarios.opaque.input ).asComputed() ).to.equal( scenarios.opaque.expected.rgb );
+            } );
+
+            it( 'returns the channels of the rgb() value rounded to integers', function () {
+                var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 1].join( ", " ) + ")" );
+                expect( colour.asComputed() ).to.equal( "rgb(254, 255, 255)" );
+            } );
+
+            it( 'returns the rgba() value when the colour is transparent', function () {
+                expect( Color( scenarios.transparent.input ).asComputed() ).to.equal( scenarios.transparent.expected.rgba );
+            } );
+
+            it( 'returns the RGB channels of the rgba() value rounded to integers', function () {
+                var colour = new Color( "AgColor(" + [254.4999/255, 254.5/255, 254.5111/255, 0.6789].join( ", " ) + ")" );
+                expect( colour.asComputed() ).to.equal( "rgba(254, 255, 255, 0.6789)" );
+            } );
+
+            it( 'throws an error when the colour passed to the constructor has not been a valid CSS colour', function () {
+                expect( function () {
+                    Color( scenarios.transparent.noColour ).asComputed();
                 } ).to.throw( "Color.ensureColor: The color object does not represent a valid color" );
             } );
 
