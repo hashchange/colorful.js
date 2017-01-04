@@ -76,7 +76,7 @@ module.exports = function (grunt) {
     meta: {
       version: '<%= pkg.version %>',
       banner: '// Colorful.js, v<%= meta.version %>\n' +
-        '// Copyright (c) <%= grunt.template.today("yyyy") %> Michael Heim, Zeilenwechsel.de\n' +
+        '// Copyright (c) 2016-<%= grunt.template.today("yyyy") %> Michael Heim, Zeilenwechsel.de\n' +
         '// Distributed under MIT license\n' +
         '// http://github.com/hashchange/colorful.js\n' +
         '\n'

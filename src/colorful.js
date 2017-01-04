@@ -559,6 +559,8 @@
         this._rawColor = parseColor( value );
     }
 
+    Color.version = "__COMPONENT_VERSION_PLACEHOLDER__";
+
     _.extend( Color.prototype, {
 
         isColor: function () {
