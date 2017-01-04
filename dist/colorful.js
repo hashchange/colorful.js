@@ -1,5 +1,5 @@
-// Colorful.js, v0.2.0
-// Copyright (c) 2016 Michael Heim, Zeilenwechsel.de
+// Colorful.js, v0.3.0
+// Copyright (c) 2016-2017 Michael Heim, Zeilenwechsel.de
 // Distributed under MIT license
 // http://github.com/hashchange/colorful.js
 
@@ -564,6 +564,8 @@
         this._rawColor = parseColor( value );
     }
 
+    Color.version = "0.3.0";
+
     _.extend( Color.prototype, {
 
         isColor: function () {
@@ -673,6 +675,10 @@
         asRgbaArray: function ( options ) {
             this.ensureColor();
             return this._asRgbArray( options ).concat( this._rawColor.a );
+        },
+
+        asComputed: function () {
+            return this.isOpaque() ? this.asRgb() : this.asRgba();
         },
 
         /**
