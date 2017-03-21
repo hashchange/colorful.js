@@ -20,7 +20,6 @@
 
     <!-- test framework -->
     <script src="../node_modules/mocha/mocha.js"></script>
-    <script src="../node_modules/mocha-clean/index.js"></script>
     <script>
         mocha.setup('bdd');
         // List files which should be dropped from a stack trace, reducing clutter. (See https://github.com/rstacruz/mocha-clean)
@@ -28,7 +27,7 @@
     </script>
 
     <!-- assertion framework --><!-- remove unnecessary components -->
-    <script src="../node_modules/karma-chai-plugins/node_modules/chai/chai.js"></script>
+    <script src="../node_modules/chai/chai.js"></script>
 
     <script>
         var expect = chai.expect,
